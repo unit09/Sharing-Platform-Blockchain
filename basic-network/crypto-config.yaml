@@ -1,0 +1,30 @@
+OrdererOrgs:
+
+  - Name: Orderer
+    Domain: sharing.com
+    Specs:
+      - Hostname: orderer
+
+
+PeerOrgs:
+
+  - Name: Agency
+    Domain: agency.sharing.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: Share1
+    Domain: share1.sharing.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
+
+  - Name: Share2
+    Domain: share2.sharing.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1

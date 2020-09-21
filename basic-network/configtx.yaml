@@ -1,0 +1,80 @@
+Organizations:
+
+  - &OrdererOrg
+      Name: OrdererOrg
+      ID: OrdererOrg
+      MSPDir: crypto-config/ordererOrganizations/sharing.com/msp
+
+  - &AgencyOrg
+      Name: AgencyOrg
+      ID: AgencyOrg
+      MSPDir: crypto-config/peerOrganizations/agency.sharing.com/msp
+      AnchorPeers:
+        - Host: peer0.agency.sharing.com
+          Port: 7051
+
+  - &Share1Org
+      Name: Share1Org
+      ID: Share1Org
+      MSPDir: crypto-config/peerOrganizations/share1.sharing.com/msp
+      AnchorPeers:
+        - Host: peer0.share1.sharing.com
+          Port: 7051
+  
+  - &Share2Org
+      Name: Share2Org
+      ID: Share2Org
+      MSPDir: crypto-config/peerOrganizations/share2.sharing.com/msp
+      AnchorPeers:
+        - Host: peer0.share2.sharing.com
+          Port: 7051
+
+
+Orderer: &OrdererDefaults
+
+    OrdererType: solo
+    Addresses:
+        - orderer.sharing.com:7050
+    BatchTimeout: 2s
+    BatchSize:
+        MaxMessageCount: 10
+        AbsoluteMaxBytes: 99 MB
+        PreferredMaxBytes: 512 KB
+    Kafka:
+        Brokers:
+            - 127.0.0.1:9092
+    Organizations:
+
+
+Application: &ApplicationDefaults
+    Organizations:
+
+
+Profiles:
+
+    OrdererGenesis:
+        Orderer:
+            <<: *OrdererDefaults
+            Organizations:
+                - *OrdererOrg
+        Consortiums:
+            SampleConsortium:
+                Organizations:
+                    - *AgencyOrg
+                    - *Share1Org
+                    - *Share2Org
+    
+    Channel1:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *AgencyOrg
+
+    Channel2:
+        Consortium: SampleConsortium
+        Application:
+            <<: *ApplicationDefaults
+            Organizations:
+                - *Share1Org
+                - *Share2Org
