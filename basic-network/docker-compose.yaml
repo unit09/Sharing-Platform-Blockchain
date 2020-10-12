@@ -38,9 +38,6 @@ services:
       - CORE_PEER_LOCALMSPID=AgencyOrg
       - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
       - CORE_PEER_ADDRESS=peer0.agency.sharing.com:7051
-      - CORE_PEER_GOSSIP_BOOTSTRAP=peer0.agency.sharing.com:7051
-      - CORE_PEER_GOSSIP_ENDPOINT=peer0.agency.sharing.com:7051
-      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.agency.sharing.com:7051
       - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_sharing
     working_dir: /opt/gopath/src/github.com/hyperledger/fabric
     command: peer node start
@@ -195,31 +192,62 @@ services:
     networks:
       - sharing
 
-  cli1:
-    container_name: cli1
-    image: hyperledger/fabric-tools
-    tty: true
+  peer0.monitor.sharing.com:
+    container_name: peer0.monitor.sharing.com
+    image: hyperledger/fabric-peer:1.4.3
     environment:
-      - GOPATH=/opt/gopath
       - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
-      - FABRIC_LOGGING_SPEC=INFO
-      - CORE_PEER_ID=cli
-      - CORE_PEER_ADDRESS=peer0.agency.sharing.com:7051
-      - CORE_PEER_LOCALMSPID=AgencyOrg
-      - CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/agency.sharing.com/users/Admin@agency.sharing.com/msp
-      - CORE_CHAINCODE_KEEPALIVE=10
-    working_dir: /opt/gopath/src/github.com/hyperledger/fabric/peer
-    command: /bin/bash
+      - CORE_PEER_ID=peer0.monitor.sharing.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=MonitorOrg
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer0.monitor.sharing.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_sharing
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 13051:7051
+      - 13053:7053
     volumes:
         - /var/run/:/host/var/run/
-        - ./../chaincode/:/opt/gopath/src/chaincode/
-        - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
+        - ./crypto-config/peerOrganizations/monitor.sharing.com/peers/peer0.monitor.sharing.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/monitor.sharing.com/users:/etc/hyperledger/msp/users
         - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.sharing.com
     networks:
-        - sharing
+      - sharing
 
-  cli2:
-    container_name: cli2
+  peer1.monitor.sharing.com:
+    container_name: peer1.monitor.sharing.com
+    image: hyperledger/fabric-peer:1.4.3
+    environment:
+      - CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock
+      - CORE_PEER_ID=peer1.monitor.sharing.com
+      - CORE_LOGGING_PEER=debug
+      - CORE_CHAINCODE_LOGGING_LEVEL=DEBUG
+      - CORE_PEER_LOCALMSPID=MonitorOrg
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/msp/peer/
+      - CORE_PEER_ADDRESS=peer1.monitor.sharing.com:7051
+      - CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=net_sharing
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    command: peer node start
+    ports:
+      - 14051:7051
+      - 14053:7053
+    volumes:
+        - /var/run/:/host/var/run/
+        - ./crypto-config/peerOrganizations/monitor.sharing.com/peers/peer1.monitor.sharing.com/msp:/etc/hyperledger/msp/peer
+        - ./crypto-config/peerOrganizations/monitor.sharing.com/users:/etc/hyperledger/msp/users
+        - ./config:/etc/hyperledger/configtx
+    depends_on:
+      - orderer.sharing.com
+    networks:
+      - sharing
+
+  cli:
+    container_name: cli
     image: hyperledger/fabric-tools
     tty: true
     environment:

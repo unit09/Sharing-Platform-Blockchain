@@ -29,6 +29,14 @@ Organizations:
         - Host: peer0.share2.sharing.com
           Port: 7051
 
+  - &MonitorOrg
+      Name: MonitorOrg
+      ID: MonitorOrg
+      MSPDir: crypto-config/peerOrganizations/monitor.sharing.com/msp
+      AnchorPeers:
+        - Host: peer0.monitor.sharing.com
+          Port: 7051
+
 
 Orderer: &OrdererDefaults
 
@@ -63,6 +71,7 @@ Profiles:
                     - *AgencyOrg
                     - *Share1Org
                     - *Share2Org
+                    - *MonitorOrg
     
     Channel1:
         Consortium: SampleConsortium
@@ -70,11 +79,6 @@ Profiles:
             <<: *ApplicationDefaults
             Organizations:
                 - *AgencyOrg
-
-    Channel2:
-        Consortium: SampleConsortium
-        Application:
-            <<: *ApplicationDefaults
-            Organizations:
                 - *Share1Org
                 - *Share2Org
+                - *MonitorOrg

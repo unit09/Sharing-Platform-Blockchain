@@ -28,3 +28,10 @@ PeerOrgs:
       Count: 2
     Users:
       Count: 1
+
+  - Name: Monitor
+    Domain: monitor.sharing.com
+    Template:
+      Count: 2
+    Users:
+      Count: 1
