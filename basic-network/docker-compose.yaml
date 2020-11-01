@@ -266,5 +266,6 @@ services:
         - ./../chaincode/:/opt/gopath/src/chaincode/
         - ./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/
         - ./config:/etc/hyperledger/configtx
+        - ./../../github.com/:/opt/gopath/src/github.com
     networks:
         - sharing
