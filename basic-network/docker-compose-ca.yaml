@@ -1,0 +1,69 @@
+version: '2'
+
+networks:
+  sharing:
+
+services:
+  ca.share1.sharing.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.share1.sharing.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.share1.sharing.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/942aadc7a98c610216c453e246b34fb452e32476dbacd14d647b06f49d2fa2dd_sk
+    ports:
+      - "7054:7054"
+    command: sh -c 'fabric-ca-server start -b admin_share1:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/share1.sharing.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.share1.sharing.com
+    networks:
+      - sharing
+  
+  ca.share2.sharing.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.share2.sharing.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.share2.sharing.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/407c8b2eada5f1c006651d6a85fb5a14503f03e3fd9d8b7593a6004975e2c19e_sk
+    ports:
+      - "9054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/share2.sharing.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.share2.sharing.com
+    networks:
+      - sharing
+  
+  ca.agency.sharing.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.agency.sharing.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.agency.sharing.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/4227fb6c38848f901a742875b5c01079878f715b9141971aa689ea561e4bedea_sk
+    ports:
+      - "11054:7054"
+    command: sh -c 'fabric-ca-server start -b admin_agency:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/agency.sharing.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.agency.sharing.com
+    networks:
+      - sharing
+
+  ca.monitor.sharing.com:
+    image: hyperledger/fabric-ca
+    environment:
+      - FABRIC_CA_HOME=/etc/hyperledger/fabric-ca-server
+      - FABRIC_CA_SERVER_CA_NAME=ca.monitor.sharing.com
+      - FABRIC_CA_SERVER_CA_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.monitor.sharing.com-cert.pem
+      - FABRIC_CA_SERVER_CA_KEYFILE=/etc/hyperledger/fabric-ca-server-config/07d6468150e2e8e028cb284abeda18967421b93d914ffd6900bdd8026219d7b2_sk
+    ports:
+      - "13054:7054"
+    command: sh -c 'fabric-ca-server start -b admin:adminpw -d'
+    volumes:
+      - ./crypto-config/peerOrganizations/monitor.sharing.com/ca/:/etc/hyperledger/fabric-ca-server-config
+    container_name: ca.monitor.sharing.com
+    networks:
+      - sharing

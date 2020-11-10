@@ -37,21 +37,21 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) pb.Response 
 			return s.startShare(APIstub, args)
 		}
 
-		return shim.Error("Access Denied")
+		return shim.Error("Access Denied : " + MSPid)
 	} else if function == "endShare" {
 
 		if MSPid == "Share1Org" {
 			return s.endShare(APIstub, args)
 		}
 
-		return shim.Error("Access Denied")
+		return shim.Error("Access Denied : " + MSPid)
 	} else if function == "setPlace" {
 
 		if MSPid == "AgencyOrg" {
 			return s.setPlace(APIstub, args)
 		}
 
-		return shim.Error("Access Denied")
+		return shim.Error("Access Denied : " + MSPid)
 	} else if function == "getShareRecordByLocation" {
 
 		return s.getShareRecordByLocation(APIstub, args)
@@ -67,7 +67,7 @@ func (s *SmartContract) Invoke(APIstub shim.ChaincodeStubInterface) pb.Response 
 			return s.getUserShareRecord(APIstub, args)
 		}
 
-		return shim.Error("Access Denied")
+		return shim.Error("Access Denied : " + MSPid)
 	}
 
 	fmt.Println("Please check your function : " + function)

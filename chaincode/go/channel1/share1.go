@@ -39,7 +39,7 @@ func generateKey(APIstub shim.ChaincodeStubInterface, key string) []byte {
 
 func (s *SmartContract) startShare(APIstub shim.ChaincodeStubInterface, args []string) pb.Response {
 	if len(args) != 3 {
-		return shim.Error("Incorrect number of arguments.")
+		return shim.Error("Incorrect number of arguments. but " + strconv.Itoa(len(args)))
 	}
 
 	shareKey := ShareRecordKey{}

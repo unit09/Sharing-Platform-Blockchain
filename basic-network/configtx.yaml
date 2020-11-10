@@ -5,14 +5,6 @@ Organizations:
       ID: OrdererOrg
       MSPDir: crypto-config/ordererOrganizations/sharing.com/msp
 
-  - &AgencyOrg
-      Name: AgencyOrg
-      ID: AgencyOrg
-      MSPDir: crypto-config/peerOrganizations/agency.sharing.com/msp
-      AnchorPeers:
-        - Host: peer0.agency.sharing.com
-          Port: 7051
-
   - &Share1Org
       Name: Share1Org
       ID: Share1Org
@@ -27,6 +19,14 @@ Organizations:
       MSPDir: crypto-config/peerOrganizations/share2.sharing.com/msp
       AnchorPeers:
         - Host: peer0.share2.sharing.com
+          Port: 7051
+
+  - &AgencyOrg
+      Name: AgencyOrg
+      ID: AgencyOrg
+      MSPDir: crypto-config/peerOrganizations/agency.sharing.com/msp
+      AnchorPeers:
+        - Host: peer0.agency.sharing.com
           Port: 7051
 
   - &MonitorOrg

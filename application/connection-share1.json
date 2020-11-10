@@ -1,0 +1,83 @@
+{
+    "name": "basic-network-share1",
+    "version": "1.0.0",
+    "client": {
+        "organization": "Share1",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+    "channels": {
+        "sharechannel1": {
+            "orderers": [
+                "orderer.sharing.com"
+            ],
+            "peers": {
+                "peer0.share1.sharing.com": {}
+            }
+        }
+    },
+    "organizations": {
+        "Share1": {
+            "mspid": "Share1Org",
+            "peers": [
+                "peer0.share1.sharing.com"
+            ],
+            "certificateAuthorities": [
+                "ca.share1.sharing.com"
+            ],
+            "adminPrivateKey": {
+                "path":"../../basic-network/crypto-config/peerOrganizations/share1.sharing.com/users/Admin@share1.sharing.com/msp/keystore/99ee2873699f68ad5537d5d0e123fc5a95b2edddad48b8c551537ef3e5c7c672_sk"
+            },
+            "signedCert":{
+                "path":"../../basic-network/crypto-config/peerOrganizations/share1.sharing.com/users/Admin@share1.sharing.com/msp/signcerts/Admin@share1.sharing.com-cert.pem"
+            }
+        }
+    },
+    "orderers": {
+        "orderer.sharing.com": {
+            "url": "grpc://localhost:7050",
+            "grpcOptions":{
+                "ssl-target-name-override":"orderer.sharing.com",
+                "grpc-max-send-message-length": -1
+            },
+            "tlsCACerts": {
+                "path": "../../basic-network/crypto-config/ordererOrganizations/sharing.com/orderers/orderer.sharing.com/msp/tlscacerts/tlsca.sharing.com-cert.pem"
+            }
+        }
+    },
+    "peers": {
+        "peer0.share1.sharing.com": {
+            "url": "grpc://localhost:7051",
+            "tlsCACerts": {
+                "path": "../../basic-network/crypto-config/peerOrganizations/share1.sharing.com/peers/peer0.share1.sharing.com/msp/tlscacerts/tlsca.share1.sharing.com-cert.pem"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peer1.share1.sharing.com",
+                "hostnameOverride": "peer1.share1.sharing.com"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.share1.sharing.com": {
+            "url": "http://localhost:7054",
+            "caName": "ca.share1.sharing.com",
+            "tlsCACerts": {
+                "path": "../../basic-network/crypto-config/peerOrganizations/share1.sharing.com/ca/ca.share1.sharing.com-cert.pem"
+            },
+            "registrar":{
+                "enrollId": "admin_share1",
+                "enrollSecret": "adminpw",
+                "caName": "cashare1"
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
