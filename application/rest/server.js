@@ -1,11 +1,23 @@
 const express = require('express');
 const app = express();
+const mysql = require('mysql');
 
 var path = require('path');
 var sdk = require('./sdk');
 
 const PORT = 8080;
-const HOST = 'localhost';
+const HOST = '192.168.154.128';
+
+var num = 1;
+
+const connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'share',
+    password : '1124',
+    database : 'sharing_platform'
+});
+
+connection.connect();
 
 // common
 app.get('/api/getAllShareRecord', function (req, res) {
@@ -48,7 +60,20 @@ app.get('/api/startShare', function (req, res) {
     var target = req.query.target;
     var location = req.query.location;
 
-    let args = [id, target, location];
+    var random_string = Math.random().toString(36).substr(2,11);
+    random_string = random_string + num;
+    num++;
+    console.log(random_string);
+
+    connection.query('insert into identity(id, str) values(?, ?)', [id, random_string],(error) => {
+        if (error){
+            console.log("Query fail...:" + error);
+            res.send("Error!");
+        }
+        else console.log('Query Success');
+    });
+
+    let args = [random_string, target, location];
 
     sdk.send(true, 'startShare', args, res, req.query.ccp);
 });
@@ -58,7 +83,20 @@ app.get('/api/endShare', function (req, res) {
     var target = req.query.target;
     var location = req.query.location;
 
-    let args = [id, target, location];
+    var random_string = Math.random().toString(36).substr(2,11);
+    random_string = random_string + num;
+    num++;
+    console.log(random_string);
+
+    connection.query('insert into identity(id, str) values(?, ?)', [id, random_string],(error) => {
+        if (error){
+            console.log("Query fail...:" + error);
+            res.send("Error!");
+        }
+        else console.log('Query Success');
+    });
+
+    let args = [random_string, target, location];
 
     sdk.send(true, 'endShare', args, res, req.query.ccp);
 });
@@ -75,38 +113,22 @@ app.get('/api/setPlace', function (req, res) {
 
 // monitor
 app.get('/api/getUserShareRecord', function (req, res) {
-    var id_set = String(req.query.id_set);
-    console.log(id_set);
+    var id = req.query.id;
 
     let args = [];
 
-    args = id_set.split(",");
-    console.log(args);
+    connection.query("select * from identity where id = '" + id + "'", (error, rows, fields) => {
+        if (error) throw error;
+        else {
+            for(var i = 0; i < rows.length; i++){
+                console.log(rows[i].str);
+                args.push(rows[i].str);
+            }
+        }
+    });
 
     sdk.send(false, 'getUserShareRecord', args, res, req.query.ccp);
 });
-/*
-app.get('/api/setMusic', function (req, res) {
-    var title = req.query.title;
-    var singer = req.query.singer;
-    var price = req.query.price;
-    var walletid = req.query.walletid;
-
-    let args = [title, singer, price, walletid];
-    sdk.send(true, 'setMusic', args, res);
-});
-app.get('/api/getAllmusic', function (req, res) {
-    let args = [];
-    sdk.send(false, 'getAllMusic', args, res);
-});
-app.get('/api/purchaseMusic', function (req, res) {
-    var walletid = req.query.walletid;
-    var key = req.query.musickey;
-    
-    let args = [walletid, key];
-    sdk.send(true, 'purchaseMusic', args, res);
-});
-*/
 
 app.use(express.static(path.join(__dirname, './client')));
 

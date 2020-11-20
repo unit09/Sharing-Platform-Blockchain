@@ -1,1 +1,3 @@
-channel1 ID : channel1access
+channel1 ID : sharechannel1
+mysql user : share/1124
+mysql db : sharing

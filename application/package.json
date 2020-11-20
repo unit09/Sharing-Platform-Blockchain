@@ -9,6 +9,7 @@
         "fabric-network": "~1.4.0",
         "grpc": "^1.9.1",
         "express": "latest",
+        "mysql": "latest",
         "body-parser": "latest",
         "ejs": "latest",
         "angular": "^1.4.3"
