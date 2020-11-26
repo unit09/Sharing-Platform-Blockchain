@@ -4,18 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"strconv"
+	"strings"
 
 	"github.com/hyperledger/fabric/core/chaincode/shim"
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
-
-type ShareRecord struct {
-	ID        string `json:"id"`
-	Timestamp string `json:"timestamp"`
-	Target    string `json:"target"`
-	Type      string `json:"type"`
-	Location  string `json:"location"`
-}
 
 func (s *SmartContract) getAllShareRecord(APIstub shim.ChaincodeStubInterface) pb.Response {
 
@@ -40,7 +33,7 @@ func (s *SmartContract) getAllShareRecord(APIstub shim.ChaincodeStubInterface) p
 	defer resultsIter.Close()
 
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"Record\":[")
 	isWritten := false
 
 	for resultsIter.HasNext() {
@@ -52,18 +45,19 @@ func (s *SmartContract) getAllShareRecord(APIstub shim.ChaincodeStubInterface) p
 		if isWritten == true {
 			buffer.WriteString(",")
 		}
-		buffer.WriteString("{\"Key\":")
+
+		/*buffer.WriteString("{\"Key\":")
 		buffer.WriteString("\"")
 		buffer.WriteString(query.Key)
-		buffer.WriteString("\"")
+		buffer.WriteString("\"")*/
 
-		buffer.WriteString(", \"Record\":")
+		//buffer.WriteString(", \"Record\":")
 
 		buffer.WriteString(string(query.Value))
-		buffer.WriteString("}")
+		//buffer.WriteString("}")
 		isWritten = true
 	}
-	buffer.WriteString("]\n")
+	buffer.WriteString("]}")
 
 	return shim.Success(buffer.Bytes())
 }
@@ -91,7 +85,7 @@ func (s *SmartContract) getShareStart(APIstub shim.ChaincodeStubInterface) pb.Re
 	defer resultsIter.Close()
 
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"Record\":[")
 	isWritten := false
 
 	for resultsIter.HasNext() {
@@ -108,19 +102,19 @@ func (s *SmartContract) getShareStart(APIstub shim.ChaincodeStubInterface) pb.Re
 				buffer.WriteString(",")
 			}
 
-			buffer.WriteString("{\"Key\":")
+			/*buffer.WriteString("{\"Key\":")
 			buffer.WriteString("\"")
 			buffer.WriteString(query.Key)
 			buffer.WriteString("\"")
 
-			buffer.WriteString(", \"Record\":")
+			buffer.WriteString(", \"Record\":")*/
 
 			buffer.WriteString(string(query.Value))
-			buffer.WriteString("}")
+			//buffer.WriteString("}")
 			isWritten = true
 		}
 	}
-	buffer.WriteString("]\n")
+	buffer.WriteString("]}")
 
 	return shim.Success(buffer.Bytes())
 }
@@ -148,7 +142,7 @@ func (s *SmartContract) getShareEnd(APIstub shim.ChaincodeStubInterface) pb.Resp
 	defer resultsIter.Close()
 
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"Record\":[")
 	isWritten := false
 
 	for resultsIter.HasNext() {
@@ -165,19 +159,19 @@ func (s *SmartContract) getShareEnd(APIstub shim.ChaincodeStubInterface) pb.Resp
 				buffer.WriteString(",")
 			}
 
-			buffer.WriteString("{\"Key\":")
+			/*buffer.WriteString("{\"Key\":")
 			buffer.WriteString("\"")
 			buffer.WriteString(query.Key)
 			buffer.WriteString("\"")
 
-			buffer.WriteString(", \"Record\":")
+			buffer.WriteString(", \"Record\":")*/
 
 			buffer.WriteString(string(query.Value))
-			buffer.WriteString("}")
+			//buffer.WriteString("}")
 			isWritten = true
 		}
 	}
-	buffer.WriteString("]\n")
+	buffer.WriteString("]}")
 
 	return shim.Success(buffer.Bytes())
 }
@@ -208,7 +202,7 @@ func (s *SmartContract) getShareRecordByLocation(APIstub shim.ChaincodeStubInter
 	defer resultsIter.Close()
 
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"Record\":[")
 	isWritten := false
 
 	for resultsIter.HasNext() {
@@ -220,24 +214,24 @@ func (s *SmartContract) getShareRecordByLocation(APIstub shim.ChaincodeStubInter
 		item := ShareRecord{}
 		json.Unmarshal(query.Value, &item)
 
-		if item.Location == args[0] {
+		if strings.Contains(item.Location, args[0]) {
 			if isWritten == true {
 				buffer.WriteString(",")
 			}
 
-			buffer.WriteString("{\"Key\":")
+			/*buffer.WriteString("{\"Key\":")
 			buffer.WriteString("\"")
 			buffer.WriteString(query.Key)
 			buffer.WriteString("\"")
 
-			buffer.WriteString(", \"Record\":")
+			buffer.WriteString(", \"Record\":")*/
 
 			buffer.WriteString(string(query.Value))
-			buffer.WriteString("}")
+			//buffer.WriteString("}")
 			isWritten = true
 		}
 	}
-	buffer.WriteString("]\n")
+	buffer.WriteString("]}")
 
 	return shim.Success(buffer.Bytes())
 }
@@ -284,7 +278,7 @@ func (s *SmartContract) countAllShareRecordByLocation(APIstub shim.ChaincodeStub
 	}
 
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"Counts\":[")
 	isWritten := false
 
 	for key, val := range locationMap {
@@ -301,9 +295,11 @@ func (s *SmartContract) countAllShareRecordByLocation(APIstub shim.ChaincodeStub
 
 		buffer.WriteString(strconv.Itoa(val))
 		buffer.WriteString("}")
+
+		isWritten = true
 	}
 
-	buffer.WriteString("]\n")
+	buffer.WriteString("]}")
 
 	return shim.Success(buffer.Bytes())
 }
@@ -331,7 +327,7 @@ func (s *SmartContract) getAllPlace(APIstub shim.ChaincodeStubInterface) pb.Resp
 	defer resultsIter.Close()
 
 	var buffer bytes.Buffer
-	buffer.WriteString("[")
+	buffer.WriteString("{\"Place\":[")
 	isWritten := false
 
 	for resultsIter.HasNext() {
@@ -343,18 +339,18 @@ func (s *SmartContract) getAllPlace(APIstub shim.ChaincodeStubInterface) pb.Resp
 		if isWritten == true {
 			buffer.WriteString(",")
 		}
-		buffer.WriteString("{\"Key\":")
+		/*buffer.WriteString("{\"Key\":")
 		buffer.WriteString("\"")
 		buffer.WriteString(query.Key)
 		buffer.WriteString("\"")
 
-		buffer.WriteString(", \"Record\":")
+		buffer.WriteString(", \"Record\":")*/
 
 		buffer.WriteString(string(query.Value))
-		buffer.WriteString("}")
+		//buffer.WriteString("}")
 		isWritten = true
 	}
-	buffer.WriteString("]\n")
+	buffer.WriteString("]}")
 
 	return shim.Success(buffer.Bytes())
 }

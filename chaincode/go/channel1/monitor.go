@@ -61,19 +61,19 @@ func (s *SmartContract) getUserShareRecord(APIstub shim.ChaincodeStubInterface, 
 				buffer.WriteString(",")
 			}
 
-			buffer.WriteString("{\"Key\":")
+			/*buffer.WriteString("{\"Key\":")
 			buffer.WriteString("\"")
 			buffer.WriteString(query.Key)
 			buffer.WriteString("\"")
 
-			buffer.WriteString(", \"Record\":")
+			buffer.WriteString("{\"Record\":")*/
 
 			buffer.WriteString(string(query.Value))
-			buffer.WriteString("}")
+			//buffer.WriteString("}")
 			isWritten = true
 		}
 	}
-	buffer.WriteString("]\n")
+	buffer.WriteString("]")
 
 	return shim.Success(buffer.Bytes())
 }

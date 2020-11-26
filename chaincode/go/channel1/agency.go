@@ -10,8 +10,10 @@ import (
 )
 
 type PlaceRecord struct {
-	ID       string `json:"id"`
-	Location string `json:"location"`
+	ID        string `json:"id"`
+	Location  string `json:"location"`
+	Longitude string `json:"longitude"`
+	Latitude  string `json:"latitude"`
 }
 
 type PlaceRecordKey struct {
@@ -42,7 +44,7 @@ func generatePlaceKey(APIstub shim.ChaincodeStubInterface, key string) []byte {
 }
 
 func (s *SmartContract) setPlace(APIstub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 2 {
+	if len(args) != 4 {
 		return shim.Error("Incorrect number of arguments.")
 	}
 
@@ -50,7 +52,7 @@ func (s *SmartContract) setPlace(APIstub shim.ChaincodeStubInterface, args []str
 	placeKeyAsBytes := generatePlaceKey(APIstub, "lastPlaceKey")
 	json.Unmarshal(placeKeyAsBytes, &placeKey)
 
-	place := PlaceRecord{ID: args[0], Location: args[1]}
+	place := PlaceRecord{ID: args[0], Location: args[1], Longitude: args[2], Latitude: args[3]}
 	placeAsBytes, _ := json.Marshal(place)
 	keyStr := placeKey.Key + strconv.Itoa(placeKey.Index)
 

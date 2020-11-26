@@ -6,7 +6,7 @@ var path = require('path');
 var sdk = require('./sdk');
 
 const PORT = 8080;
-const HOST = '192.168.154.128';
+const HOST = '192.168.154.130';
 
 var num = 1;
 
@@ -55,10 +55,12 @@ app.get('/api/getAllPlace', function (req, res) {
 
 
 // share1
-app.get('/api/startShare', function (req, res) {
+app.post('/api/startShare', function (req, res) {
     var id = req.query.id;
     var target = req.query.target;
     var location = req.query.location;
+    var longitude = req.query.longitude;
+    var latitude = req.query.latitude;
 
     var random_string = Math.random().toString(36).substr(2,11);
     random_string = random_string + num;
@@ -73,15 +75,17 @@ app.get('/api/startShare', function (req, res) {
         else console.log('Query Success');
     });
 
-    let args = [random_string, target, location];
+    let args = [random_string, target, location, longitude, latitude];
 
     sdk.send(true, 'startShare', args, res, req.query.ccp);
 });
 
-app.get('/api/endShare', function (req, res) {
+app.post('/api/endShare', function (req, res) {
     var id = req.query.id;
     var target = req.query.target;
     var location = req.query.location;
+    var longitude = req.query.longitude;
+    var latitude = req.query.latitude;
 
     var random_string = Math.random().toString(36).substr(2,11);
     random_string = random_string + num;
@@ -96,17 +100,19 @@ app.get('/api/endShare', function (req, res) {
         else console.log('Query Success');
     });
 
-    let args = [random_string, target, location];
+    let args = [random_string, target, location, longitude, latitude];
 
     sdk.send(true, 'endShare', args, res, req.query.ccp);
 });
 
 // agency
-app.get('/api/setPlace', function (req, res) {
+app.post('/api/setPlace', function (req, res) {
     var id = req.query.id;
     var location = req.query.location;
+    var longitude = req.query.longitude;
+    var latitude = req.query.latitude;
 
-    let args = [id, location];
+    let args = [id, location, longitude, latitude];
 
     sdk.send(true, 'setPlace', args, res, req.query.ccp);
 });

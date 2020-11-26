@@ -10,6 +10,16 @@ import (
 	pb "github.com/hyperledger/fabric/protos/peer"
 )
 
+type ShareRecord struct {
+	ID        string `json:"id"`
+	Timestamp string `json:"timestamp"`
+	Target    string `json:"target"`
+	Type      string `json:"type"`
+	Location  string `json:"location"`
+	Longitude string `json:"longitude"`
+	Latitude  string `json:"latitude"`
+}
+
 type ShareRecordKey struct {
 	Key   string
 	Index int
@@ -38,7 +48,7 @@ func generateKey(APIstub shim.ChaincodeStubInterface, key string) []byte {
 }
 
 func (s *SmartContract) startShare(APIstub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 3 {
+	if len(args) != 5 {
 		return shim.Error("Incorrect number of arguments. but " + strconv.Itoa(len(args)))
 	}
 
@@ -48,7 +58,7 @@ func (s *SmartContract) startShare(APIstub shim.ChaincodeStubInterface, args []s
 
 	now := time.Now().Format("2006-01-02 15:04:05")
 
-	share := ShareRecord{ID: args[0], Timestamp: now, Target: args[1], Type: "start", Location: args[2]}
+	share := ShareRecord{ID: args[0], Timestamp: now, Target: args[1], Type: "start", Location: args[2], Longitude: args[3], Latitude: args[4]}
 	shareAsBytes, _ := json.Marshal(share)
 	keyStr := shareKey.Key + strconv.Itoa(shareKey.Index)
 
@@ -69,7 +79,7 @@ func (s *SmartContract) endShare(APIstub shim.ChaincodeStubInterface, args []str
 
 	now := time.Now().Format("2006-01-02 15:04:05")
 
-	share := ShareRecord{ID: args[0], Timestamp: now, Target: args[1], Type: "end", Location: args[2]}
+	share := ShareRecord{ID: args[0], Timestamp: now, Target: args[1], Type: "end", Location: args[2], Longitude: args[3], Latitude: args[4]}
 	shareAsBytes, _ := json.Marshal(share)
 	keyStr := shareKey.Key + strconv.Itoa(shareKey.Index)
 
