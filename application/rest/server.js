@@ -55,54 +55,64 @@ app.get('/api/getAllPlace', function (req, res) {
 
 
 // share1
-app.post('/api/startShare', function (req, res) {
+app.get('/api/startShare', function (req, res) {
     var id = req.query.id;
     var target = req.query.target;
     var location = req.query.location;
     var longitude = req.query.longitude;
     var latitude = req.query.latitude;
 
-    var random_string = Math.random().toString(36).substr(2,11);
-    random_string = random_string + num;
-    num++;
-    console.log(random_string);
+    if(req.query.ccp != 'share1'){
+        res.send('Access Denied');
+    }
+    else{
+        var random_string = Math.random().toString(36).substr(2,11);
+        random_string = random_string + num;
+        num++;
+        console.log(random_string);
 
-    connection.query('insert into identity(id, str) values(?, ?)', [id, random_string],(error) => {
-        if (error){
-            console.log("Query fail...:" + error);
-            res.send("Error!");
-        }
-        else console.log('Query Success');
-    });
+        connection.query('insert into identity(id, str) values(?, ?)', [id, random_string],(error) => {
+            if (error){
+                console.log("Query fail...:" + error);
+                res.send("Error!");
+            }
+            else console.log('Query Success');
+        });
 
-    let args = [random_string, target, location, longitude, latitude];
+        let args = [random_string, target, location, longitude, latitude];
 
-    sdk.send(true, 'startShare', args, res, req.query.ccp);
+        sdk.send(true, 'startShare', args, res, req.query.ccp);
+    }    
 });
 
-app.post('/api/endShare', function (req, res) {
+app.get('/api/endShare', function (req, res) {
     var id = req.query.id;
     var target = req.query.target;
     var location = req.query.location;
     var longitude = req.query.longitude;
     var latitude = req.query.latitude;
 
-    var random_string = Math.random().toString(36).substr(2,11);
-    random_string = random_string + num;
-    num++;
-    console.log(random_string);
+    if(req.query.ccp != 'share1'){
+        res.send('Access Denied');
+    }
+    else{
+        var random_string = Math.random().toString(36).substr(2,11);
+        random_string = random_string + num;
+        num++;
+        console.log(random_string);
 
-    connection.query('insert into identity(id, str) values(?, ?)', [id, random_string],(error) => {
-        if (error){
-            console.log("Query fail...:" + error);
-            res.send("Error!");
-        }
-        else console.log('Query Success');
-    });
+        connection.query('insert into identity(id, str) values(?, ?)', [id, random_string],(error) => {
+            if (error){
+                console.log("Query fail...:" + error);
+                res.send("Error!");
+            }
+            else console.log('Query Success');
+        });
 
-    let args = [random_string, target, location, longitude, latitude];
+        let args = [random_string, target, location, longitude, latitude];
 
-    sdk.send(true, 'endShare', args, res, req.query.ccp);
+        sdk.send(true, 'endShare', args, res, req.query.ccp);
+    }
 });
 
 // agency
@@ -112,9 +122,14 @@ app.post('/api/setPlace', function (req, res) {
     var longitude = req.query.longitude;
     var latitude = req.query.latitude;
 
-    let args = [id, location, longitude, latitude];
+    if(req.query.ccp != 'agency'){
+        res.send('Access Denied');
+    }
+    else{
+        let args = [id, location, longitude, latitude];
 
-    sdk.send(true, 'setPlace', args, res, req.query.ccp);
+        sdk.send(true, 'setPlace', args, res, req.query.ccp);
+    }
 });
 
 // monitor
@@ -123,17 +138,22 @@ app.get('/api/getUserShareRecord', function (req, res) {
 
     let args = [];
 
-    connection.query("select * from identity where id = '" + id + "'", (error, rows, fields) => {
-        if (error) throw error;
-        else {
-            for(var i = 0; i < rows.length; i++){
-                console.log(rows[i].str);
-                args.push(rows[i].str);
+    if(!(req.query.ccp == 'share1' || req.query.ccp == 'monitor')){
+        res.send('Access Denied');
+    }
+    else{
+        connection.query("select * from identity where id = '" + id + "'", (error, rows, fields) => {
+            if (error) throw error;
+            else {
+                for(var i = 0; i < rows.length; i++){
+                    console.log(rows[i].str);
+                    args.push(rows[i].str);
+                }
             }
-        }
-    });
-
-    sdk.send(false, 'getUserShareRecord', args, res, req.query.ccp);
+        });
+    
+        sdk.send(false, 'getUserShareRecord', args, res, req.query.ccp);
+    }
 });
 
 app.use(express.static(path.join(__dirname, './client')));

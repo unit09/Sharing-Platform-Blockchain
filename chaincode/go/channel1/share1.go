@@ -69,7 +69,7 @@ func (s *SmartContract) startShare(APIstub shim.ChaincodeStubInterface, args []s
 }
 
 func (s *SmartContract) endShare(APIstub shim.ChaincodeStubInterface, args []string) pb.Response {
-	if len(args) != 3 {
+	if len(args) != 5 {
 		return shim.Error("Incorrect number of arguments.")
 	}
 
